@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:19 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/05 14:49:34 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/05 17:52:01 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,21 +82,28 @@ char	*ft_strncpy(char *dst, char *src, int n)
 }
 
 // NETTOYAGE DE STASH
+// nettoyer le stash de la ligne extraite
 void	ft_cleanstash(char *stash, int index)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
+	char	*tmp;
 
 	i = 0;
 	j = 0;
+	tmp = malloc(sizeof(char) * (ft_strlen(stash) - index + 1));
+	if (!tmp)
+		return ;
 	while (stash[i])
 	{
 		if (i > index)
 		{
-			stash[j] = stash[i];
+			tmp[j] = stash[i];
 			j++;
 		}
 		i++;
 	}
-	stash[j] = '\0';
+	tmp[j] = '\0';
+	free(stash);
+	stash = tmp;
 }
