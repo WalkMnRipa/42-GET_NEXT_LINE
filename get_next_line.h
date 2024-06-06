@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:23 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/06 18:03:34 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/06 18:32:57 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ char	*ft_strjoin(char *s1, char *s2);
 int		ft_strchr(char *str, char c);
 char	*ft_strncpy(char *dest, char *src, int n);
 char	*ft_cleanstash(char *stash, int index);
+char	*ft_check_params(int fd, char *stash);
 
 char	*get_next_line(int fd);
 

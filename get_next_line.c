@@ -6,11 +6,25 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:22 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/06 18:11:26 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/06 18:33:00 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*ft_check_params(int fd, char *stash)
+{
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (!stash)
+	{
+		stash = malloc(1);
+		if (!stash)
+			return (NULL);
+		stash[0] = '\0';
+	}
+	return (stash);
+}
 
 char	*get_next_line(int fd)
 {
@@ -22,8 +36,6 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	nb_carac = 1;
-	index = -1;
 	// Si ma stash est vide, je la malloc
 	if (!stash)
 	{
@@ -32,6 +44,8 @@ char	*get_next_line(int fd)
 			return (NULL);
 		stash[0] = '\0';
 	}
+	nb_carac = 1;
+	index = -1;
 	while (nb_carac > 0 && index == -1)
 	{
 		nb_carac = read(fd, buffer, BUFFER_SIZE);
@@ -53,10 +67,10 @@ char	*get_next_line(int fd)
 
 int	main(void)
 {
-	int fd;
-	char *line;
+	int		fd;
+	char	*line;
 
-	fd = open("ptheo.txt", O_RDONLY);
+	fd = open("gnl.txt", O_RDONLY);
 	line = get_next_line(fd);
 	printf("%s$\n", line);
 	line = get_next_line(fd);
