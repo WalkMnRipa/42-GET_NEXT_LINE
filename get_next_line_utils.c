@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:19 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/06 17:21:32 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/06 18:03:32 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		j++;
 	}
 	join[i + j] = '\0';
+	free(s1);
 	return (join);
 }
 
@@ -108,5 +109,6 @@ char	*ft_cleanstash(char *stash, int index)
 		j++;
 	}
 	new_stash[j] = '\0';
+	free(stash);
 	return (new_stash);
 }

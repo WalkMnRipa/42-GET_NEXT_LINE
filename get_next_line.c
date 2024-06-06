@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:22 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/06 17:55:15 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/06 18:09:14 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	nb_carac = 1;
-	// S ma stash est vide, je la malloc
+	index = -1;
+	// Si ma stash est vide, je la malloc
 	if (!stash)
 	{
 		stash = malloc(1);
@@ -34,6 +35,8 @@ char	*get_next_line(int fd)
 	while (nb_carac > 0 && index == -1)
 	{
 		nb_carac = read(fd, buffer, BUFFER_SIZE);
+		if (nb_carac < 0)
+			return (NULL);
 		buffer[nb_carac] = '\0';
 		stash = ft_strjoin(stash, buffer);
 		index = ft_strchr(stash, '\n');
@@ -55,7 +58,9 @@ int	main(void)
 
 	fd = open("ptheo.txt", O_RDONLY);
 	line = get_next_line(fd);
-	printf("%s\n", line);
+	printf("%s$\n", line);
+	line = get_next_line(fd);
+	printf("%s$\n", line);
 	free(line);
 	close(fd);
 	return (0);
