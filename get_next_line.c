@@ -6,13 +6,52 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:22 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/09 15:58:50 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/09 18:04:26 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_get_line(char *stash, int index)
+char	*ft_read_and_join(int fd, char *stash, int *nb_carac, int *index)
+{
+	char	buffer[BUFFER_SIZE + 1];
+	int		read_result;
+
+	read_result = read(fd, buffer, BUFFER_SIZE);
+	if (read_result < 0)
+		return (NULL);
+	buffer[read_result] = '\0';
+	stash = ft_strjoin(stash, buffer);
+	*nb_carac = read_result;
+	*index = ft_strchr(stash, '\n');
+	return (stash);
+}
+
+char	*initialize_stash(int fd, char *stash)
+{
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (!stash)
+	{
+		stash = malloc(1);
+		if (!stash)
+			return (NULL);
+		stash[0] = '\0';
+	}
+	return (stash);
+}
+
+char	*reset_if_empty(char *stash, int nb_carac)
+{
+	if (nb_carac == 0 && stash[0] == '\0')
+	{
+		free(stash);
+		return (NULL);
+	}
+	return (stash);
+}
+
+char	*ft_extract_line(char *stash, int index)
 {
 	char	*line;
 
@@ -28,39 +67,26 @@ char	*ft_get_line(char *stash, int index)
 
 char	*get_next_line(int fd)
 {
-	char		buffer[BUFFER_SIZE + 1];
 	static char	*stash;
 	char		*line;
 	int			index;
 	int			nb_carac;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
+	stash = initialize_stash(fd, stash);
 	if (!stash)
-	{
-		stash = malloc(1);
-		if (!stash)
-			return (NULL);
-		stash[0] = '\0';
-	}
+		return (NULL);
 	nb_carac = 1;
 	index = -1;
 	while (nb_carac > 0 && index == -1)
 	{
-		nb_carac = read(fd, buffer, BUFFER_SIZE);
-		if (nb_carac < 0)
+		stash = ft_read_and_join(fd, stash, &nb_carac, &index);
+		if (!stash)
 			return (NULL);
-		buffer[nb_carac] = '\0';
-		stash = ft_strjoin(stash, buffer);
-		index = ft_strchr(stash, '\n');
 	}
-	if (nb_carac == 0 && stash[0] == '\0')
-	{
-		free(stash);
-		stash = NULL;
+	stash = reset_if_empty(stash, nb_carac);
+	if (!stash)
 		return (NULL);
-	}
-	line = ft_get_line(stash, index);
+	line = ft_extract_line(stash, index);
 	stash = ft_cleanstash(stash, index);
 	return (line);
 }
@@ -74,11 +100,10 @@ int	main(void)
 	line = get_next_line(fd);
 	while (line)
 	{
-		printf("%s$\n", line);
+		printf("%s$", line);
 		free(line);
 		line = get_next_line(fd);
 	}
-	free(line);
 	close(fd);
 	return (0);
 }
