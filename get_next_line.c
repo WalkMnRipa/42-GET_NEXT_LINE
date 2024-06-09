@@ -6,37 +6,36 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:22 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/06 18:33:00 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/09 15:58:50 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_check_params(int fd, char *stash)
+char	*ft_get_line(char *stash, int index)
 {
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	char	*line;
+
+	if (index == -1)
+		index = ft_strlen(stash);
+	line = malloc(index + 1);
+	if (!line)
 		return (NULL);
-	if (!stash)
-	{
-		stash = malloc(1);
-		if (!stash)
-			return (NULL);
-		stash[0] = '\0';
-	}
-	return (stash);
+	line = ft_strncpy(line, stash, index);
+	line[index] = '\0';
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
 	char		buffer[BUFFER_SIZE + 1];
 	static char	*stash;
-	int			index;
 	char		*line;
+	int			index;
 	int			nb_carac;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	// Si ma stash est vide, je la malloc
 	if (!stash)
 	{
 		stash = malloc(1);
@@ -55,12 +54,13 @@ char	*get_next_line(int fd)
 		stash = ft_strjoin(stash, buffer);
 		index = ft_strchr(stash, '\n');
 	}
-	if (index == -1)
-		index = ft_strlen(stash);
-	line = malloc(index + 1);
-	if (!line)
+	if (nb_carac == 0 && stash[0] == '\0')
+	{
+		free(stash);
+		stash = NULL;
 		return (NULL);
-	line = ft_strncpy(line, stash, index);
+	}
+	line = ft_get_line(stash, index);
 	stash = ft_cleanstash(stash, index);
 	return (line);
 }
@@ -72,9 +72,12 @@ int	main(void)
 
 	fd = open("gnl.txt", O_RDONLY);
 	line = get_next_line(fd);
-	printf("%s$\n", line);
-	line = get_next_line(fd);
-	printf("%s$\n", line);
+	while (line)
+	{
+		printf("%s$\n", line);
+		free(line);
+		line = get_next_line(fd);
+	}
 	free(line);
 	close(fd);
 	return (0);

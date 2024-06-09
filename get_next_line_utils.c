@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:19 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/06 18:27:55 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/09 15:52:31 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (join);
 }
 
-// REGARDER DANS STASH SI IL Y A '\n'
-// SI OUI, RETURN INDEX DU '\n'
 int	ft_strchr(char *str, char c)
 {
 	int	i;
@@ -65,9 +63,6 @@ int	ft_strchr(char *str, char c)
 	}
 	return (-1);
 }
-
-// EXTRAIRE LA LIGNE --> '\n'
-// ft_strncpy (char *dest, char *src, int n) n etant l'index du '\n'
 
 char	*ft_strncpy(char *dest, char *src, int n)
 {
@@ -83,20 +78,17 @@ char	*ft_strncpy(char *dest, char *src, int n)
 	return (dest);
 }
 
-// NETTOYAGE DE STASH
-// nettoyer le stash de la ligne extraite
-/*
-	stash = "bonjour\nsalut"
-	buffer = "salut"
-	index = 7
-	Apres le passage de la fonction cleanstash, stash sera egal a "salut"
-*/
 char	*ft_cleanstash(char *stash, int index)
 {
 	char	*new_stash;
 	int		i;
 	int		j;
 
+	if (index == -1)
+	{
+		free(stash);
+		return (NULL);
+	}
 	new_stash = malloc(sizeof(char) * (ft_strlen(stash) - index + 1));
 	if (!new_stash)
 		return (NULL);
