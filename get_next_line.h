@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:23 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/09 17:00:07 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/10 17:19:53 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1000000
+# endif
 
 int		ft_strlen(char *str);
 int		ft_strchr(char *str, char c);

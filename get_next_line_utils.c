@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:19 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/09 17:43:08 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/10 17:09:38 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	ft_strchr(char *str, char c)
 	while (str[i])
 	{
 		if (str[i] == c)
-			return (i);
+			return (i + 1);
 		i++;
 	}
 	return (-1);
@@ -84,15 +84,15 @@ char	*ft_cleanstash(char *stash, int index)
 	int		i;
 	int		j;
 
-	if (index == -1)
+	if (index == -1 || stash[index] == '\0')
 	{
 		free(stash);
 		return (NULL);
 	}
-	new_stash = malloc(sizeof(char) * (ft_strlen(stash) - index + 1));
+	new_stash = malloc(sizeof(char) * (ft_strlen(stash) - index) + 1);
 	if (!new_stash)
 		return (NULL);
-	i = index + 1;
+	i = index;
 	j = 0;
 	while (stash[i])
 	{

@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:22 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/09 18:04:26 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/10 17:19:19 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,23 @@ char	*ft_read_and_join(int fd, char *stash, int *nb_carac, int *index)
 	read_result = read(fd, buffer, BUFFER_SIZE);
 	if (read_result < 0)
 		return (NULL);
+	if (read_result == 0 && !stash)
+		return (NULL);
 	buffer[read_result] = '\0';
 	stash = ft_strjoin(stash, buffer);
+	if (!stash)
+		return (NULL);
 	*nb_carac = read_result;
 	*index = ft_strchr(stash, '\n');
 	return (stash);
 }
 
-char	*initialize_stash(int fd, char *stash)
+char	*init_stash(int fd, char *stash)
 {
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
+	(void)fd;
 	if (!stash)
 	{
-		stash = malloc(1);
+		stash = malloc(sizeof(char) * 1);
 		if (!stash)
 			return (NULL);
 		stash[0] = '\0';
@@ -43,6 +46,8 @@ char	*initialize_stash(int fd, char *stash)
 
 char	*reset_if_empty(char *stash, int nb_carac)
 {
+	if (!stash)
+		return (NULL);
 	if (nb_carac == 0 && stash[0] == '\0')
 	{
 		free(stash);
@@ -55,6 +60,8 @@ char	*ft_extract_line(char *stash, int index)
 {
 	char	*line;
 
+	if (!stash)
+		return (NULL);
 	if (index == -1)
 		index = ft_strlen(stash);
 	line = malloc(index + 1);
@@ -67,43 +74,46 @@ char	*ft_extract_line(char *stash, int index)
 
 char	*get_next_line(int fd)
 {
-	static char	*stash;
+	static char	*stash = NULL;
 	char		*line;
 	int			index;
+	char		*new_stash;
 	int			nb_carac;
 
-	stash = initialize_stash(fd, stash);
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	free((nb_carac = 1, index = -1, stash = init_stash(fd, stash), NULL));
 	if (!stash)
 		return (NULL);
-	nb_carac = 1;
-	index = -1;
 	while (nb_carac > 0 && index == -1)
 	{
-		stash = ft_read_and_join(fd, stash, &nb_carac, &index);
-		if (!stash)
-			return (NULL);
+		new_stash = ft_read_and_join(fd, stash, &nb_carac, &index);
+		if (!new_stash)
+			return (free(stash), stash = NULL, NULL);
+		stash = new_stash;
+		if (nb_carac == 0 && stash[0] == '\0')
+			free((stash = NULL, stash));
 	}
 	stash = reset_if_empty(stash, nb_carac);
-	if (!stash)
-		return (NULL);
 	line = ft_extract_line(stash, index);
-	stash = ft_cleanstash(stash, index);
-	return (line);
+	if (!line)
+		return (free(stash), stash = NULL, NULL);
+	return (stash = ft_cleanstash(stash, index), line);
 }
 
-int	main(void)
-{
-	int		fd;
-	char	*line;
+// int	main(void)
+// {
+// 	int		fd;
+// 	char	*line;
 
-	fd = open("gnl.txt", O_RDONLY);
-	line = get_next_line(fd);
-	while (line)
-	{
-		printf("%s$", line);
-		free(line);
-		line = get_next_line(fd);
-	}
-	close(fd);
-	return (0);
-}
+// 	fd = open("41_with_nl", O_RDONLY);
+// 	line = get_next_line(fd);
+// 	while (line)
+// 	{
+// 		printf("%s", line);
+// 		free(line);
+// 		line = get_next_line(fd);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
