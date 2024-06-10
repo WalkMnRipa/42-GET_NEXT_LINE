@@ -6,7 +6,7 @@
 /*   By: jcohen <jcohen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/03 19:24:19 by jcohen            #+#    #+#             */
-/*   Updated: 2024/06/10 17:09:38 by jcohen           ###   ########.fr       */
+/*   Updated: 2024/06/10 18:10:18 by jcohen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,7 @@ char	*ft_cleanstash(char *stash, int index)
 	i = index;
 	j = 0;
 	while (stash[i])
-	{
-		new_stash[j] = stash[i];
-		i++;
-		j++;
-	}
+		new_stash[j++] = stash[i++];
 	new_stash[j] = '\0';
 	free(stash);
 	return (new_stash);
